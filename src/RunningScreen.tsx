@@ -151,7 +151,7 @@ export const RunningScreen = () => {
                 <Button variant="contained" color="error" size="large" onClick={() => addEvent('Run')}
                         sx={{mb: 1, minWidth: 200}}><Typography variant="h3">Run</Typography></Button>
             </Box>
-            <Paper style={{maxHeight: 950, overflow: 'auto', marginTop: 16}}>
+            <Paper style={{maxHeight: 800, overflow: 'auto', marginTop: 16}}>
                 <List>
                     {events
                         .sort((a, b) => b.start.getTime() - a.start.getTime())
