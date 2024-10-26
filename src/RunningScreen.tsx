@@ -151,7 +151,7 @@ export const RunningScreen = () => {
                 <Button variant="contained" color="error" size="large" onClick={() => addEvent('Run')}
                         sx={{mb: 1, minWidth: 200}}><Typography variant="h3">Run</Typography></Button>
             </Box>
-            <Paper style={{maxHeight: 700, overflow: 'auto', marginTop: 16}}>
+            <Paper style={{maxHeight: 950, overflow: 'auto', marginTop: 16}}>
                 <List>
                     {events
                         .sort((a, b) => b.start.getTime() - a.start.getTime())
@@ -167,8 +167,8 @@ export const RunningScreen = () => {
                          handleCloseDialog={handleCloseDialog}/>
 
             <Box position="absolute" sx={{bottom: 0}}>
-                <Link href={'https://www.flaticon.com/free-icon/runner_182865'}>
-                    Runner iconRunner icons created by Freepik - Flaticon
+                <Link href={'https://www.flaticon.com/free-icon/athlete_11010139'}>
+                    Athlete/Runner icons created by Freepik - Flaticon
                 </Link>
             </Box>
         </Box>

@@ -6,10 +6,10 @@ export const generateTheme = () => createTheme({
         light: {
             palette: {
                 primary: {
-                    main: '#00b140',
+                    main: '#B28AE4',
                 },
                 secondary: {
-                    main: '#468165',
+                    main: '#C9AAF2',
                 },
                 error: {
                     main: red.A400,
@@ -23,10 +23,10 @@ export const generateTheme = () => createTheme({
         dark: {
             palette: {
                 primary: {
-                    main: '#00b140',
+                    main: '#B28AE4',
                 },
                 secondary: {
-                    main: '#468165',
+                    main: '#C9AAF2',
                 },
                 error: {
                     main: red.A400,
