@@ -1,10 +1,11 @@
-import {Box, Button, IconButton, Link, List, Paper, Stack, Typography, useColorScheme, useTheme} from '@mui/material';
+import {Box, IconButton, Link, List, Paper, Typography, useColorScheme, useTheme} from '@mui/material';
 import {useEffect, useState} from 'react';
 import {differenceInSeconds} from 'date-fns';
 import {RunningEventItem} from './RunningEventItem';
 import {Nightlight, Refresh, WbSunny} from '@mui/icons-material';
 import {parseRunningEventsFromStorage, RunningEvent} from './RunningEvent';
 import {AlertDialog} from './dialogs/AlertDialog';
+import {RunningControls} from '../RunningControls';
 
 export type AlertDialogType = 'resetEvents' | '';
 
@@ -141,36 +142,30 @@ export const RunningScreen = () => {
 
             <Typography variant={"h2"}>Running Tracker</Typography>
 
-            <Box display={"flex"} justifyContent={"space-evenly"} pt={2}>
-                <Button variant="contained" color="success" size="large" onClick={() => addEvent('Walk')}
-                        sx={{mb: 1, minWidth: 200}}><Typography variant="h3">Walk</Typography></Button>
-                <Stack>
-                    <Typography variant="h4">{totalTime}</Typography>
-                    <Typography variant="h4">{totalDistance.toFixed(2)} mi.</Typography>
-                </Stack>
-                <Button variant="contained" color="error" size="large" onClick={() => addEvent('Run')}
-                        sx={{mb: 1, minWidth: 200}}><Typography variant="h3">Run</Typography></Button>
+            <Box display="flex" flexDirection="column" flex="1">
+                <RunningControls totalDistance={totalDistance} totalTime={totalTime} addEvent={addEvent}/>
+
+                <Paper style={{flex: 1, maxHeight: 800, overflow: 'auto', marginTop: 16}}>
+                    <List>
+                        {events
+                            .sort((a, b) => b.start.getTime() - a.start.getTime())
+                            .map((event) => (
+                                <RunningEventItem key={event.id} event={event} onChangeSpeed={handleChangeSpeed}
+                                                  onTypeChipClicked={handleOnTypeChipClicked}
+                                                  onDeleteButtonClicked={handleOnDeleteButtonClicked}/>
+                            ))}
+                    </List>
+                </Paper>
+
+                <Box>
+                    <Link href={'https://www.flaticon.com/free-icon/athlete_11010139'}>
+                        Athlete/Runner icons created by Freepik - Flaticon
+                    </Link>
+                </Box>
             </Box>
-            <Paper style={{maxHeight: 800, overflow: 'auto', marginTop: 16}}>
-                <List>
-                    {events
-                        .sort((a, b) => b.start.getTime() - a.start.getTime())
-                        .map((event) => (
-                            <RunningEventItem key={event.id} event={event} onChangeSpeed={handleChangeSpeed}
-                                              onTypeChipClicked={handleOnTypeChipClicked}
-                                              onDeleteButtonClicked={handleOnDeleteButtonClicked}/>
-                        ))}
-                </List>
-            </Paper>
 
             <AlertDialog dialogType={dialogType} isOpen={isDialogOpen} title={dialogTitle} content={dialogContent}
                          handleCloseDialog={handleCloseDialog}/>
-
-            <Box position="absolute" sx={{bottom: 0}}>
-                <Link href={'https://www.flaticon.com/free-icon/athlete_11010139'}>
-                    Athlete/Runner icons created by Freepik - Flaticon
-                </Link>
-            </Box>
         </Box>
     )
 }

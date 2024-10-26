@@ -4,7 +4,7 @@ import {RunningScreen} from './RunningScreen';
 
 function App() {
     return (
-        <Container id="root" maxWidth={"sm"} sx={{height: '100%'}}>
+        <Container id="root" maxWidth={"sm"}>
             <RunningScreen/>
         </Container>
     )
