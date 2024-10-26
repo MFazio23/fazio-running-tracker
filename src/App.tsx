@@ -1,13 +1,11 @@
 import './App.css'
-import {Box, Container} from '@mui/material';
+import {Container} from '@mui/material';
 import {RunningScreen} from './RunningScreen';
 
 function App() {
     return (
-        <Container id="root" maxWidth={"sm"}>
-            <Box>
-                <RunningScreen/>
-            </Box>
+        <Container id="root" maxWidth={"sm"} sx={{height: '100%'}}>
+            <RunningScreen/>
         </Container>
     )
 }

@@ -1,4 +1,4 @@
-import {Box, Button, IconButton, List, Paper, Stack, Typography, useColorScheme, useTheme} from '@mui/material';
+import {Box, Button, IconButton, Link, List, Paper, Stack, Typography, useColorScheme, useTheme} from '@mui/material';
 import {useEffect, useState} from 'react';
 import {differenceInSeconds} from 'date-fns';
 import {RunningEventItem} from './RunningEventItem';
@@ -129,7 +129,7 @@ export const RunningScreen = () => {
     }, [startDateTime, events]);
 
     return (
-        <Box position='relative'>
+        <Box position='relative' height="100%">
             <IconButton aria-label={'reset'} onClick={() => handleReset()}
                         sx={{position: 'absolute', top: 0, left: 0, margin: 2}}>
                 <Refresh/>
@@ -165,6 +165,12 @@ export const RunningScreen = () => {
 
             <AlertDialog dialogType={dialogType} isOpen={isDialogOpen} title={dialogTitle} content={dialogContent}
                          handleCloseDialog={handleCloseDialog}/>
+
+            <Box position="absolute" sx={{bottom: 0}}>
+                <Link href={'https://www.flaticon.com/free-icon/runner_182865'}>
+                    Runner iconRunner icons created by Freepik - Flaticon
+                </Link>
+            </Box>
         </Box>
     )
 }
