@@ -1,7 +1,11 @@
 import {
     Box,
-    Button, Dialog,
-    DialogActions, DialogContent, DialogContentText, DialogTitle,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
     IconButton,
     List,
     Paper,
@@ -12,8 +16,9 @@ import {
 } from '@mui/material';
 import {useEffect, useState} from 'react';
 import {differenceInSeconds} from 'date-fns';
-import {RunningEvent, RunningEventItem} from './RunningEventItem.tsx';
+import {RunningEventItem} from './RunningEventItem';
 import {Nightlight, Refresh, WbSunny} from '@mui/icons-material';
+import {parseRunningEventsFromStorage, RunningEvent} from './RunningEvent';
 
 export type AlertDialogType = 'resetEvents' | '';
 
@@ -23,10 +28,10 @@ const defaultSpeeds = {
 }
 
 export const RunningScreen = () => {
-    const [startDateTime, setStartDateTime] = useState<Date | undefined>(undefined);
+    const [events, setEvents] = useState<RunningEvent[]>(parseRunningEventsFromStorage());
+    const [startDateTime, setStartDateTime] = useState<Date | undefined>(events[0]?.start);
     const [totalTime, setTotalTime] = useState<string>("--:--");
     const [totalDistance, setTotalDistance] = useState<number>(0);
-    const [events, setEvents] = useState<RunningEvent[]>(JSON.parse(localStorage.getItem('events') || '[]') || []);
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [dialogTitle, setDialogTitle] = useState('');
@@ -41,6 +46,7 @@ export const RunningScreen = () => {
         const eventDate = new Date();
         if (!startDateTime) {
             setStartDateTime(eventDate);
+            localStorage.setItem('runningStartDateTime', eventDate.toISOString());
         }
 
         const newEvent = {
@@ -50,9 +56,9 @@ export const RunningScreen = () => {
             speed: type === 'Walk' ? defaultSpeeds.walk : defaultSpeeds.run
         };
 
-        const lastEvent = events.pop()!;
+        const lastEvent = events.find(e => !e.end);
 
-        const newEvents = [...events];
+        const newEvents = [...events].filter(e => e.id !== lastEvent?.id);
 
         if (lastEvent) {
             newEvents.push({...lastEvent, end: eventDate});
@@ -61,7 +67,13 @@ export const RunningScreen = () => {
         newEvents.push(newEvent);
 
         setEvents(newEvents);
-        localStorage.setItem('events', JSON.stringify(newEvents));
+        localStorage.setItem('runningEvents', JSON.stringify(newEvents));
+    }
+
+    const updateEvent = (event: RunningEvent) => {
+        const newEvents = events.map(e => e.id === event.id ? event : e);
+        setEvents(newEvents);
+        localStorage.setItem('runningEvents', JSON.stringify(newEvents));
     }
 
     const handleChangeColorScheme = () => {
@@ -69,14 +81,23 @@ export const RunningScreen = () => {
     }
 
     const handleChangeSpeed = (event: RunningEvent, speed: number) => {
-        const safeSpeed = isNaN(speed) ? 0 : speed;
-        const newEvents = events.map(e => e.id === event.id ? {...e, speed: safeSpeed} : e);
-        setEvents(newEvents);
+        const safeSpeed = isNaN(speed) ? "0" : speed.toFixed(1);
+
+        updateEvent({...event, speed: parseFloat(safeSpeed)});
     }
 
     const handleOnTypeChipClicked = (event: RunningEvent) => {
-        const newEvents: RunningEvent[] = events.map(e => e.id === event.id ? {...e, type: e.type === 'Walk' ? 'Run' : 'Walk'} : e);
+        const newEvents: RunningEvent[] = events.map(e => e.id === event.id ? {
+            ...e,
+            type: e.type === 'Walk' ? 'Run' : 'Walk'
+        } : e);
         setEvents(newEvents);
+    }
+
+    const handleOnDeleteButtonClicked = (event: RunningEvent) => {
+        const newEvents: RunningEvent[] = events.filter(e => e.id !== event.id);
+        setEvents(newEvents);
+        localStorage.setItem('runningEvents', JSON.stringify(newEvents));
     }
 
     const handleReset = () => {
@@ -94,7 +115,7 @@ export const RunningScreen = () => {
                 setStartDateTime(undefined);
                 setTotalDistance(0);
                 setTotalTime('--:--');
-                localStorage.setItem('events', '[]');
+                localStorage.setItem('runningEvents', '[]');
             }
         }
     }
@@ -132,7 +153,7 @@ export const RunningScreen = () => {
                 {theme.palette.mode === 'light' ? <Nightlight/> : <WbSunny/>}
             </IconButton>
 
-            <Typography variant={"h2"}>Running</Typography>
+            <Typography variant={"h2"}>Running Tracker</Typography>
 
             <Box display={"flex"} justifyContent={"space-evenly"} pt={2}>
                 <Button variant="contained" color="success" size="large" onClick={() => addEvent('Walk')}
@@ -146,9 +167,13 @@ export const RunningScreen = () => {
             </Box>
             <Paper style={{maxHeight: 700, overflow: 'auto', marginTop: 16}}>
                 <List>
-                    {events.map((event) => (
-                        <RunningEventItem key={event.id} event={event} onChangeSpeed={handleChangeSpeed} onTypeChipClicked={handleOnTypeChipClicked}/>
-                    ))}
+                    {events
+                        .sort((a, b) => b.start.getTime() - a.start.getTime())
+                        .map((event) => (
+                            <RunningEventItem key={event.id} event={event} onChangeSpeed={handleChangeSpeed}
+                                              onTypeChipClicked={handleOnTypeChipClicked}
+                                              onDeleteButtonClicked={handleOnDeleteButtonClicked}/>
+                        ))}
                 </List>
             </Paper>
 

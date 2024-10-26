@@ -1,5 +1,5 @@
 import { Button, Grid2 as Grid, TextField} from '@mui/material';
-import {RunningEvent} from './RunningEventItem.tsx';
+import {RunningEvent} from './RunningEvent';
 
 export interface RunningEventControlsProps {
     event: RunningEvent;
