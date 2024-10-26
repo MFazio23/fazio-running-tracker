@@ -1,24 +1,10 @@
-import {
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    IconButton,
-    List,
-    Paper,
-    Stack,
-    Typography,
-    useColorScheme,
-    useTheme
-} from '@mui/material';
+import {Box, Button, IconButton, List, Paper, Stack, Typography, useColorScheme, useTheme} from '@mui/material';
 import {useEffect, useState} from 'react';
 import {differenceInSeconds} from 'date-fns';
 import {RunningEventItem} from './RunningEventItem';
 import {Nightlight, Refresh, WbSunny} from '@mui/icons-material';
 import {parseRunningEventsFromStorage, RunningEvent} from './RunningEvent';
+import {AlertDialog} from './dialogs/AlertDialog';
 
 export type AlertDialogType = 'resetEvents' | '';
 
@@ -177,22 +163,8 @@ export const RunningScreen = () => {
                 </List>
             </Paper>
 
-            <Dialog
-                open={isDialogOpen}
-                onClose={(isConfirmed: boolean) => handleCloseDialog(dialogType, isConfirmed)}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">{dialogTitle}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">{dialogContent}</DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => handleCloseDialog(dialogType, false)}>Cancel</Button>
-                    <Button onClick={() => handleCloseDialog(dialogType, true)} autoFocus>OK</Button>
-                </DialogActions>
-            </Dialog>
-
+            <AlertDialog dialogType={dialogType} isOpen={isDialogOpen} title={dialogTitle} content={dialogContent}
+                         handleCloseDialog={handleCloseDialog}/>
         </Box>
     )
 }

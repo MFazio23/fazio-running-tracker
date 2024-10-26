@@ -1,4 +1,4 @@
-import { Button, Grid2 as Grid, TextField} from '@mui/material';
+import {Button, Grid2 as Grid, TextField} from '@mui/material';
 import {RunningEvent} from './RunningEvent';
 
 export interface RunningEventControlsProps {
@@ -15,7 +15,7 @@ export const RunningEventControls = ({event, onChangeSpeed}: RunningEventControl
             </Grid>
             <Grid>
                 <TextField type={"number"} value={event.speed} slotProps={{htmlInput: {step: 0.1}}}
-                           sx={{top: 0, bottom: 0, marginLeft: 2, width: 75, height: 75}}
+                           sx={{top: 0, bottom: 0, marginLeft: 2, width: 55}}
                            onChange={(e) => onChangeSpeed(event, parseFloat(e.target.value))}/>
             </Grid>
             <Grid>
